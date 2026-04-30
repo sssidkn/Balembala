@@ -1,0 +1,187 @@
+syntax = "proto3";
+
+option go_package = "pkg/api/report";
+
+import "google/api/annotations.proto";
+
+package api;
+
+service ReportService {
+  rpc CreateTemplate(CreateTemplateRequest) returns (CreateTemplateResponse) {
+    option(google.api.http) = {
+      post: "/api/templates",
+      body: "*"
+    };
+  }
+  rpc GetTemplate(GetTemplateRequest) returns (GetTemplateResponse) {
+    option(google.api.http) = {
+      get: "/api/template/{template_id}"
+    };
+  }
+  rpc UpdateTemplate(UpdateTemplateRequest) returns (UpdateTemplateResponse) {
+    option(google.api.http) = {
+      put: "/api/template/{template_id}",
+      body: "*"
+    };
+  }
+  rpc DeleteTemplate(DeleteTemplateRequest) returns (DeleteTemplateResponse) {
+    option(google.api.http) = {
+      delete: "/api/template/{template_id}"
+    };
+  }
+  rpc ListTemplates(ListTemplatesRequest) returns (ListTemplatesResponse) {
+    option(google.api.http) = {
+      get: "/api/templates"
+    };
+  }
+  rpc CreateContact(CreateContactRequest) returns (CreateContactResponse) {
+    option(google.api.http) = {
+      post: "/api/contacts",
+      body: "*"
+    };
+  }
+  rpc GetContact(GetContactRequest) returns (GetContactResponse) {
+    option(google.api.http) = {
+      get: "/api/contact/{contact_id}"
+    };
+  }
+  rpc UpdateContact(UpdateContactRequest) returns (UpdateContactResponse) {
+    option(google.api.http) = {
+      put: "/api/contact/{contact_id}",
+      body: "*"
+    };
+  }
+  rpc DeleteContact(DeleteContactRequest) returns (DeleteContactResponse) {
+    option(google.api.http) = {
+      delete: "/api/contact/{contact_id}"
+    };
+  }
+
+  rpc AddContactsToTemplate(AddContactsToTemplateRequest) returns (AddContactsToTemplateResponse) {
+    option(google.api.http) = {
+      post: "/api/template/{template_id}",
+      body: "*",
+    };
+  }
+  rpc GetContacts(GetContactsRequest) returns (GetContactsResponse) {
+    option(google.api.http) = {
+      get: "/api/contacts"
+    };
+  }
+  rpc GetContactsByTemplate(GetContactsByTemplateRequest) returns (GetContactsByTemplateResponse) {
+    option(google.api.http) = {
+      get: "/api/contacts/{template_id}"
+    };
+  }
+}
+
+message Template {
+  int64 id = 1;
+  string title = 2;
+  string message = 3;
+}
+
+message Contact {
+  int64 id = 1;
+  string name = 2;
+  string email = 3;
+}
+
+message AddContactsToTemplateRequest {
+  int64 template_id = 1;
+  repeated int64 contacts_id = 2;
+}
+
+message AddContactsToTemplateResponse {
+  bool success = 1;
+}
+
+message CreateTemplateRequest {
+  string title = 1;
+  string message = 2;
+}
+
+message CreateTemplateResponse {
+  Template template = 1;
+}
+
+message GetTemplateRequest {
+  int64 template_id = 1;
+}
+
+message GetTemplateResponse {
+  Template template = 1;
+}
+
+message UpdateTemplateRequest {
+  int64 template_id = 1;
+  string title = 2;
+  string message = 3;
+}
+
+message UpdateTemplateResponse {
+  Template template = 1;
+}
+
+message DeleteTemplateRequest {
+  int64 template_id = 1;
+}
+
+message DeleteTemplateResponse {
+  bool success = 1;
+}
+
+message ListTemplatesRequest {}
+
+message ListTemplatesResponse {
+  repeated Template templates = 1;
+}
+
+message CreateContactRequest {
+  string email = 1;
+  string name = 2;
+}
+
+message CreateContactResponse {
+  Contact contact = 1;
+}
+
+message GetContactRequest {
+  int64 contact_id = 1;
+}
+
+message GetContactResponse {
+  Contact contact = 1;
+}
+
+message UpdateContactRequest {
+  int64 contact_id = 1;
+  string email = 2;
+  string name = 3;
+}
+
+message UpdateContactResponse {
+  Contact contact = 1;
+}
+
+message DeleteContactRequest {
+  int64 contact_id = 1;
+}
+
+message DeleteContactResponse {
+  bool success = 1;
+}
+
+message GetContactsByTemplateRequest {
+  int64 template_id = 1;
+}
+
+message GetContactsByTemplateResponse {
+  repeated Contact contacts = 1;
+}
+
+message GetContactsRequest {}
+
+message GetContactsResponse {
+  repeated Contact contacts = 1;
+}
