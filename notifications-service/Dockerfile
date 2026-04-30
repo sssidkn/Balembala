@@ -10,12 +10,13 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
-RUN CGO_ENABLED=1 GOOS=linux go build -o /sender-service ./cmd/main.go
+RUN CGO_ENABLED=1 GOOS=linux go build -o /notifications-service ./cmd/main.go
 
 FROM debian:bullseye-slim
 RUN apt-get update && \
     apt-get install -y \
     librdkafka1 \
     && rm -rf /var/lib/apt/lists/*
-COPY --from=builder /sender-service /sender-service
-ENTRYPOINT ["/sender-service"]
+COPY --from=builder /notifications-service /notifications-service
+EXPOSE 9010 8083
+ENTRYPOINT ["/notifications-service"]
