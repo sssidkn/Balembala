@@ -1,0 +1,317 @@
+services:
+  api-gateway:
+    build: api-gateway
+    container_name: api-gateway
+    ports:
+      - "80:80"
+    depends_on:
+      - auth-service
+      - notifications-service
+      - contacts-templates-service
+
+
+  kafka1:
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka1
+    expose:
+      - "8092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      CLUSTER_ID: "XbRg4VXaQZq4d5w5l1Sf3g"
+      KAFKA_NODE_ID: 1
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka1:9093,2@kafka2:9095,3@kafka3:9097"
+
+      KAFKA_PROCESS_ROLES: "broker,controller"
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT"
+      KAFKA_LISTENERS: "INTERNAL://:8092,CONTROLLER://:9093"
+      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka1:8092"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
+    volumes:
+      - kafka-data1:/var/lib/kafka/data
+
+
+  kafka2:
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka2
+    expose:
+      - "8094"
+    environment:
+      KAFKA_BROKER_ID: 2
+      CLUSTER_ID: "XbRg4VXaQZq4d5w5l1Sf3g"
+      KAFKA_NODE_ID: 2
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka1:9093,2@kafka2:9095,3@kafka3:9097"
+
+      KAFKA_PROCESS_ROLES: "broker,controller"
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT"
+      KAFKA_LISTENERS: "INTERNAL://:8094,CONTROLLER://:9095"
+      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka2:8094"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
+    volumes:
+      - kafka-data2:/var/lib/kafka/data
+
+  kafka3:
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka3
+    expose:
+      - "8096"
+    environment:
+      KAFKA_BROKER_ID: 3
+      CLUSTER_ID: "XbRg4VXaQZq4d5w5l1Sf3g"
+      KAFKA_NODE_ID: 3
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka1:9093,2@kafka2:9095,3@kafka3:9097"
+
+      KAFKA_PROCESS_ROLES: "broker,controller"
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT"
+      KAFKA_LISTENERS: "INTERNAL://:8096,CONTROLLER://:9097"
+      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka3:8096"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
+    volumes:
+      - kafka-data3:/var/lib/kafka/data
+
+  kafka-init:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
+    command: >
+      bash -ec '
+        BOOTSTRAP="kafka1:8092,kafka2:8094,kafka3:8096";
+        until kafka-topics --bootstrap-server "$$BOOTSTRAP" --list >/dev/null 2>&1; do
+          echo "Waiting for Kafka...";
+          sleep 5;
+        done;
+        for item in notifications:3:3 retry:3:3 dlq:3:3; do
+          IFS=: read -r name partitions replication <<< "$$item";
+          kafka-topics --bootstrap-server "$$BOOTSTRAP" --create --if-not-exists --topic "$$name" --partitions "$$partitions" --replication-factor "$$replication";
+        done;
+        kafka-topics --bootstrap-server "$$BOOTSTRAP" --list;
+        touch /tmp/kafka-ready;
+        tail -f /dev/null
+      '
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /tmp/kafka-ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  notifications-service:
+    build:
+      context: notifications-service
+      dockerfile: Dockerfile
+    container_name: notifications-service
+    expose:
+      - "9010"
+      - "8083"
+    environment:
+      GRPC_PORT: "9010"
+      HTTP_PORT: "8083"
+      REPORT_SERVER: "contacts-templates-service:9080"
+      BROKERS: "kafka1:8092,kafka2:8094,kafka3:8096"
+      KAFKA_SECURITY_PROTOCOL: "plaintext"
+      REDIS_HOST: cache
+      REDIS_PORT: 6379
+      CHANNEL_SIZE: 1000
+      CHANNEL_NUMBER: 3
+      BATCH_SIZE: 100
+    volumes:
+      - notifications-service-data:/var/lib/notifications-service/data
+    depends_on:
+      kafka1:
+        condition: service_started
+      kafka2:
+        condition: service_started
+      kafka3:
+        condition: service_started
+      kafka-init:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  #  kafka-ui:
+  #    image: provectuslabs/kafka-ui:latest
+  #    container_name: kafka-ui
+  #    ports:
+  #      - "8085:8080"
+  #    environment:
+  #      KAFKA_CLUSTERS_0_NAME: "KafkaCluster"
+  #      KAFKA_CLUSTERS_0_PROPERTIES_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: ""
+  #      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "kafka1:8092,kafka2:8094,kafka3:8096"
+  #      KAFKA_CLUSTERS_0_PROPERTIES_SECURITY_PROTOCOL: "SSL"
+  #      KAFKA_CLUSTERS_0_PROPERTIES_SSL_TRUSTSTORE_LOCATION: "/truststore.jks"
+  #      KAFKA_CLUSTERS_0_PROPERTIES_SSL_TRUSTSTORE_PASSWORD: "123456"
+  #      KAFKA_CLUSTERS_0_PROPERTIES_SSL_KEYSTORE_LOCATION: "/keystore.jks"
+  #      KAFKA_CLUSTERS_0_PROPERTIES_SSL_KEYSTORE_PASSWORD: "123456"
+  #      KAFKA_CLUSTERS_0_PROPERTIES_SSL_KEY_PASSWORD: "123456"
+  #    volumes:
+  #      - ./certs/kafka.truststore.jks:/truststore.jks:ro
+  #      - ./certs/kafka1.keystore.jks:/keystore.jks:ro
+  #    depends_on:
+  #      - kafka1
+  #      - kafka2
+  #      - kafka3
+  #      - redis
+  #      - contacts-templates-service
+  #      - sender-service
+
+  reportDB:
+    image: postgres:17
+    container_name: reportDB
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: reportDB
+
+    volumes:
+      - reportDB:/var/lib/postgresql/data
+      - ./contacts-templates-service/migrations/docker-init.sql:/docker-entrypoint-initdb.d/001-init.sql:ro
+    expose:
+      - "5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U root -d reportDB" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  contacts-templates-service:
+    build:
+      context: contacts-templates-service
+      dockerfile: Dockerfile
+    container_name: report
+    environment:
+      REST_PORT: 8082
+      GRPC_PORT: 9080
+      REDIS_HOST: cache
+      REDIS_PORT: 6379
+      POSTGRES_HOST: reportDB
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: reportDB
+    expose:
+      - "8082"
+      - "9080"
+    depends_on:
+      reportDB:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  redis:
+    image: redis:latest
+    container_name: cache
+    command: redis-server --loglevel verbose
+    expose:
+      - "6379"
+    volumes:
+      - redis_data:/data
+
+  sender-service:
+    build:
+      context: sender-service
+      dockerfile: Dockerfile
+    container_name: sender-service
+    environment:
+      KAFKA_BROKERS: "kafka1:8092,kafka2:8094,kafka3:8096"
+      KAFKA_SECURITY_PROTOCOL: "plaintext"
+      KAFKA_INPUT_TOPIC: "notifications"
+      KAFKA_RETRY_TOPIC: "retry"
+      USERNAME: "notificat2025@mail.ru"
+      PASSWORD: "Lm1gNygA98dCedEfx1Fc"
+    volumes:
+      - sender-service-data:/var/lib/sender-service/data
+    depends_on:
+      kafka1:
+        condition: service_started
+      kafka2:
+        condition: service_started
+      kafka3:
+        condition: service_started
+      kafka-init:
+        condition: service_healthy
+
+  auth-service:
+    build:
+      context: auth-service
+      dockerfile: Dockerfile
+    container_name: auth
+    expose:
+      - "8081"
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASS: 1234
+      POSTGRES_HOST: authDB
+      POSTGRES_DB: authDB
+      POSTGRES_PORT: 5432
+      GRPC_PORT: 9090
+      HTTP_PORT: 8081
+      SECRET: my_secret_key
+      JWT_SECRET: my_secret_key
+    depends_on:
+      authDb:
+        condition: service_healthy
+
+  authDb:
+    image: postgres:17
+    container_name: authDB
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: authDB
+    volumes:
+      - authDB:/var/lib/postgresql/data
+      - ./auth-service/migrations/docker-init.sql:/docker-entrypoint-initdb.d/001-init.sql:ro
+    expose:
+      - "5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U root -d authDB" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  retry-processor-service:
+    build:
+      context: retry-processor-service
+      dockerfile: Dockerfile
+    container_name: retry-processor-service
+    environment:
+      KAFKA_BROKERS: "kafka1:8092,kafka2:8094,kafka3:8096"
+      KAFKA_SECURITY_PROTOCOL: "plaintext"
+      KAFKA_NOTIFICATIONS_TOPIC: "notifications"
+      KAFKA_RETRY_TOPIC: "retry"
+      KAFKA_DLQ_TOPIC: "dlq"
+      MAX_RETRIES: 3
+      PARTITIONS_COUNT: 3
+      CHANNEL_SIZE: 100
+    volumes:
+      - retry-processor-service-data:/var/lib/retry-processor-service/data
+    depends_on:
+      kafka1:
+        condition: service_started
+      kafka2:
+        condition: service_started
+      kafka3:
+        condition: service_started
+      kafka-init:
+        condition: service_healthy
+      notifications-service:
+        condition: service_started
+      sender-service:
+        condition: service_started
+
+volumes:
+  kafka-data1:
+  kafka-data2:
+  kafka-data3:
+  notifications-service-data:
+  reportDB:
+  redis_data:
+  sender-service-data:
+  authDB:
+  retry-processor-service-data:

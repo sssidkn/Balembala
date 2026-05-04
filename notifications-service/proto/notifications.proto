@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+option go_package = "pkg/api/notifications";
+import "google/api/annotations.proto";
+
+package notifications;
+
+service Notifications {
+  rpc Send (SendRequest) returns (SendResponse) {
+    option (google.api.http) = {
+      post: "/api/send/{templateId}",
+    };
+  };
+}
+
+service ReportService {
+  rpc GetContactsByTemplate(GetContactsByTemplateRequest) returns (GetContactsByTemplateResponse);
+  rpc GetTemplate(GetTemplateRequest) returns (GetTemplateResponse);
+}
+
+message GetTemplateRequest {
+  int64 templateId = 1;
+}
+
+message GetTemplateResponse{
+  Template template = 1;
+}
+
+message SendResponse {
+  string status = 1;
+}
+
+message SendRequest {
+  int64 templateId = 1;
+}
+
+message Contact {
+  int64 contactId = 1;
+  int64 templateId = 2;
+  string email = 3;
+}
+
+message Template {
+  int64 templateId = 1;
+  string title = 2;
+  string message = 3;
+}
+
+message GetContactsByTemplateRequest {
+  int64 templateId = 1;
+}
+
+message GetContactsByTemplateResponse {
+  repeated Contact contacts = 1;
+}
