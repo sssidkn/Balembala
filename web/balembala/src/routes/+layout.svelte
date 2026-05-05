@@ -29,8 +29,12 @@
 			border: none;
 			border-radius: 5pt;
 			padding: 5pt;
+			cursor: pointer;
 			background-color: var(--button);
 			color: var(--light-text);
+		}
+		button:hover {
+			filter: brightness(1.5);
 		}
 		.card {
         	border-radius: 16pt;
