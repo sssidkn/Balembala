@@ -1,13 +1,25 @@
 <script lang="ts">
+	import Logo from '$lib/components/Logo.svelte';
 	let { children } = $props();
 </script>
 
-{@render children()}
+<div class="vstack">
+	<Logo />
+	<div class="card">
+		{@render children()}
+	</div>
+</div>
 
 <style>
-    :global {
-        body {
-            background-color: var(--dark-background);
-        }
-    }
+	.vstack {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		margin-top: 5em;
+		row-gap: 5pt;
+	}
+	:global(body) {
+		background-color: var(--dark-background);
+	}
 </style>

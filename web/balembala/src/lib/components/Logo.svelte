@@ -1,19 +1,25 @@
-<div>
-    <h1>Balembala</h1>
-    <small>Notification system</small>
-</div>
+<script>
+	import { resolve } from '$app/paths';
+</script>
+
+<a href={resolve('/')}>
+	<b>Balembala</b>
+	<br />
+	<small>Notification system</small>
+</a>
 
 <style>
-    h1 {
-        color: var(--light-text);
-        margin-top: 0;
-        margin-bottom: 0;
-    }
-    small {
-        color: var(--gray-text);
-    }
-    div {
-        text-align: center;
-        margin: 5pt;
-    }
+	b {
+		color: var(--light-text);
+		font-size: xx-large;
+	}
+	small {
+		color: var(--gray-text);
+	}
+	a {
+		text-decoration: none;
+		display: block;
+		text-align: center;
+		margin: 5pt;
+	}
 </style>
