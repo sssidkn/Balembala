@@ -1,11 +1,31 @@
-<script>
+<script lang="ts">
 	import { enhance } from '$app/forms';
+	import type { ResolvedPathname } from '$app/types';
 	import Check from '$lib/assets/icons/Check.svg?component';
 	import X from '$lib/assets/icons/X.svg?component';
+	import type { Contact } from '$lib/data';
 
-	const { data } = $props();
-	let name = $derived(data.name);
-	let email = $derived(data.email);
+	interface Props {
+		data: Contact;
+		action?: ResolvedPathname;
+	}
+
+	const { data, action }: Props = $props();
+
+	let name: string = $derived.by(() => {
+		if (!changed) {
+			return data.name;
+		} else {
+			return name;
+		}
+	});
+	let email: string = $derived.by(() => {
+		if (!changed) {
+			return data.email;
+		} else {
+			return email;
+		}
+	});
 	let changed = $state(false);
 	const setChanged = () => (changed = true);
 	const reset = () => {
@@ -18,6 +38,7 @@
 <form
 	class="card main vstack"
 	method="POST"
+	{action}
 	use:enhance={() =>
 		({ update }) => {
 			changed = false;

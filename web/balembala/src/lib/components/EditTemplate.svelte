@@ -10,7 +10,7 @@
 		action?: ResolvedPathname;
 	}
 
-	const { data = $bindable(), action }: Props = $props();
+	const { data, action }: Props = $props();
 	let title: string = $derived.by(() => {
 		if (!changed) {
 			return data.title;
@@ -26,6 +26,7 @@
 		}
 	});
 	let changed = $state(false);
+
 	const setChanged = () => (changed = true);
 	const reset = () => {
 		changed = false;

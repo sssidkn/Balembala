@@ -8,14 +8,14 @@ function contact(id: string, name: string, email: string): Contact {
 
 export const load = async ({ params }) => {
 	return {
-		template: (await dataload()).data[Number(params.edit)],
+		template: (await dataload()).data[Number(params.id)],
 		contacts: [contact('0', 'First', 'first@mail.ru'), contact('1', 'Second', 'second@mail.ru')]
 	};
 };
 
 export const actions = {
 	default: async ({ request, params }) => {
-		const id = params.edit;
+		const id = params.id;
 		const data = await request.formData();
 		console.log(`editing template with ${id}`);
 		const template = {
