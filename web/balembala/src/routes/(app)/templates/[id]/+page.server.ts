@@ -1,15 +1,10 @@
 import type { Actions } from './$types';
-import { load as dataload } from '../+page.server';
-import type { Contact } from '$lib/data';
-
-function contact(id: string, name: string, email: string): Contact {
-	return { id, name, email };
-}
+import { bound_contacts, templates } from '$lib/data';
 
 export const load = async ({ params }) => {
 	return {
-		template: (await dataload()).data[Number(params.id)],
-		contacts: [contact('0', 'First', 'first@mail.ru'), contact('1', 'Second', 'second@mail.ru')]
+		template: templates[Number(params.id)],
+		contacts: bound_contacts
 	};
 };
 

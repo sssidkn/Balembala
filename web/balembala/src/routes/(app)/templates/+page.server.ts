@@ -1,20 +1,8 @@
-import type { Template } from '$lib/data';
+import { templates } from '$lib/data';
 import type { Actions } from './$types';
 
-function template(id: string, title: string, message: string): Template {
-	return { id, title, message };
-}
-
-const data = [
-	template('0', 'First', 'message1'),
-	template('1', 'Second', 'message2'),
-	template('2', 'Third', 'message3'),
-	template('3', 'Forth', 'message4'),
-	template('4', 'Fifth', 'message5')
-];
-
 export const load = async () => {
-	return { data };
+	return { data: templates };
 };
 
 export const actions = {
