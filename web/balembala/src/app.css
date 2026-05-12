@@ -65,7 +65,8 @@ label.text-form {
 	color: var(--gray-text);
 	margin-left: 3pt;
 }
-input.text-form {
+textarea.text-form, input.text-form {
+	font-family: Arial;
 	display: block;
 	border-radius: 5pt;
 	border-width: 1pt;

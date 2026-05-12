@@ -15,36 +15,34 @@
 	};
 </script>
 
-<div class="center">
-	<form
-		class="card main vstack"
-		method="POST"
-		use:enhance={() =>
-			({ update }) => {
-				changed = false;
-				update();
-			}}
-	>
-		<input type="text" name="name" class="name-input" bind:value={name} oninput={setChanged} />
-		<div>
-			<label for="email" class="text-form">Email</label>
-			<input
-				type="email"
-				name="email"
-				class="text-form"
-				style:width="100%"
-				bind:value={email}
-				oninput={setChanged}
-			/>
+<form
+	class="card main vstack"
+	method="POST"
+	use:enhance={() =>
+		({ update }) => {
+			changed = false;
+			update();
+		}}
+>
+	<input type="text" name="name" class="name-input" bind:value={name} oninput={setChanged} />
+	<div>
+		<label for="email" class="text-form">Email</label>
+		<input
+			type="email"
+			name="email"
+			class="text-form"
+			style:width="100%"
+			bind:value={email}
+			oninput={setChanged}
+		/>
+	</div>
+	{#if changed}
+		<div class="control-buttons">
+			<button type="submit" style:background-color="var(--success)"><Check /></button>
+			<button style:background-color="var(--error)" onclick={reset}><X /></button>
 		</div>
-		{#if changed}
-			<div class="control-buttons">
-				<button type="submit" style:background-color="var(--success)"><Check /></button>
-				<button style:background-color="var(--error)" onclick={reset}><X /></button>
-			</div>
-		{/if}
-	</form>
-</div>
+	{/if}
+</form>
 
 <style>
 	.name-input {
@@ -60,17 +58,5 @@
 		row-gap: 10pt;
 		border: solid 1.5pt var(--border);
 		width: 200pt;
-	}
-	.control-buttons {
-		display: flex;
-		justify-content: space-between;
-		button {
-			border-radius: 100%;
-			color: var(--light-text);
-			aspect-ratio: 1;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-		}
 	}
 </style>

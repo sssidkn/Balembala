@@ -1,10 +1,6 @@
+import type { Contact } from '$lib/data';
 import type { Actions } from './$types';
 
-export interface Contact {
-	id: string;
-	name: string;
-	email: string;
-}
 function contact(id: string, name: string, email: string): Contact {
 	return { id, name, email };
 }

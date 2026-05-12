@@ -5,7 +5,7 @@
 	import Plus from '$lib/assets/icons/Plus.svg?component';
 	import Refresh from '$lib/assets/icons/Refresh.svg?component';
 	import type { PageProps } from './$types';
-	import type { Template } from './+page.server';
+	import type { Template } from '$lib/data';
 	import { invalidateAll } from '$app/navigation';
 	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';
@@ -16,39 +16,37 @@
 	}
 </script>
 
-<div class="center">
-	<div class="vstack" style:align-items="center">
-		<FilteredList {data} {isMatches} pageSize={5}>
-			{#snippet header(searchBar)}
-				<div class="card entry" style:font-size="xx-large" style:margin-bottom="10pt">
-					<div style:flex-grow="1"><b>Templates</b></div>
-					{@render searchBar('Search title...')}
-					<button class="round" onclick={invalidateAll}><Refresh /></button>
-					<a class="btn round" href={resolve('/templates/new')}><Plus /></a>
-				</div>
-			{/snippet}
+<div class="vstack" style:align-items="center">
+	<FilteredList {data} {isMatches} pageSize={5}>
+		{#snippet header(searchBar)}
+			<div class="card entry" style:font-size="xx-large" style:margin-bottom="10pt">
+				<div style:flex-grow="1"><b>Templates</b></div>
+				{@render searchBar('Search title...')}
+				<button class="round" onclick={invalidateAll}><Refresh /></button>
+				<a class="btn round" href={resolve('/templates/new')}><Plus /></a>
+			</div>
+		{/snippet}
 
-			{#snippet entry(d)}
-				<form
-					class="card entry"
-					method="POST"
-					use:enhance={({ formData }) => {
-						data = data.filter((d) => d.id != formData.get('id')?.toString());
-						return ({ update }) => {
-							update({ invalidateAll: false });
-						};
-					}}
-				>
-					<input value={d.id} type="hidden" name="id" />
-					<a class="contact" href={resolve(`/templates/${d.id}`)}>
-						<div class="title"><b>{d.title}</b></div>
-					</a>
-					<button class="round" formaction="?/send"><Send /></button>
-					<button class="round" formaction="?/delete"><Trash /></button>
-				</form>
-			{/snippet}
-		</FilteredList>
-	</div>
+		{#snippet entry(d)}
+			<form
+				class="card entry"
+				method="POST"
+				use:enhance={({ formData }) => {
+					data = data.filter((d) => d.id != formData.get('id')?.toString());
+					return ({ update }) => {
+						update({ invalidateAll: false });
+					};
+				}}
+			>
+				<input value={d.id} type="hidden" name="id" />
+				<a class="contact" href={resolve(`/templates/${d.id}`)}>
+					<div class="title"><b>{d.title}</b></div>
+				</a>
+				<button class="round" formaction="?/send"><Send /></button>
+				<button class="round" formaction="?/delete"><Trash /></button>
+			</form>
+		{/snippet}
+	</FilteredList>
 </div>
 
 <style>

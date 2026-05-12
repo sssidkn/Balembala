@@ -22,7 +22,7 @@
 		</button>
 	</form>
 </div>
-{@render children()}
+<div class="center">{@render children()}</div>
 
 <style>
 	.top-bar {

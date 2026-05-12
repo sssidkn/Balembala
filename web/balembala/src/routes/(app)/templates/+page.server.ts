@@ -1,10 +1,6 @@
+import type { Template } from '$lib/data';
 import type { Actions } from './$types';
 
-export interface Template {
-	id: string;
-	title: string;
-	message: string;
-}
 function template(id: string, title: string, message: string): Template {
 	return { id, title, message };
 }

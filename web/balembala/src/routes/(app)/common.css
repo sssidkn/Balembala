@@ -3,7 +3,7 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
-    column-gap: 10pt;
+    column-gap: 30pt;
 }
 .vstack {
     display: flex;
@@ -21,4 +21,16 @@
 }
 button.secret {
     display: none;
+}
+.control-buttons {
+    display: flex;
+    justify-content: space-between;
+    button {
+        border-radius: 100%;
+        color: var(--light-text);
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 }
