@@ -1,0 +1,24 @@
+.center {
+    margin-top: 20pt;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    column-gap: 10pt;
+}
+.vstack {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    row-gap: 10pt;
+}
+.entry {
+    display: flex;
+    width: 100%;
+    column-gap: 10pt;
+    align-items: center;
+    border: solid 1.5pt var(--border);
+    --pad: 8pt;
+}
+button.secret {
+    display: none;
+}
