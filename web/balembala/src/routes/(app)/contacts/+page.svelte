@@ -19,12 +19,12 @@
 	<div class="vstack" style:align-items="center">
 		<FilteredList {data} {isMatches} pageSize={5}>
 			{#snippet header(searchBar)}
-				<form class="card entry" style:font-size="xx-large" style:margin-bottom="10pt">
+				<div class="card entry" style:font-size="xx-large" style:margin-bottom="10pt">
 					<div style:flex-grow="1"><b>Contacts</b></div>
 					{@render searchBar('Search name or email...')}
 					<button class="round" onclick={invalidateAll}><Refresh /></button>
 					<a class="btn round" href={resolve('/contacts/new')}><Plus /></a>
-				</form>
+				</div>
 			{/snippet}
 
 			{#snippet entry(d)}
