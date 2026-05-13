@@ -31,10 +31,12 @@
 			<form
 				class="card entry"
 				method="POST"
-				use:enhance={({ formData }) => {
-					data = data.filter((d) => d.id != formData.get('id')?.toString());
-					return ({ update }) => {
-						update({ invalidateAll: false });
+				use:enhance={({ formData, action }) => {
+					if (action.search === '?/delete') {
+						data = data.filter((d) => d.id != formData.get('id')?.toString());
+					}
+					return async ({ update }) => {
+						await update({ invalidateAll: false });
 					};
 				}}
 			>

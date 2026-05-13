@@ -11,11 +11,25 @@
 	--success: #10B981;
 }
 
+html {
+	height: 100%;
+}
+
 body {
 	color: var(--dark-text);
 	font-family: Arial;
+	height: 100%;
 	margin: 0;
 }
+
+.whole-bg {
+	display: flow-root;
+	margin: 0;
+	padding: 0;
+	min-height: 100%;
+	width: 100%;
+}
+
 button,.btn {
 	border: none;
 	border-radius: 5pt;

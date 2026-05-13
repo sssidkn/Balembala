@@ -7,22 +7,25 @@
 	let { children } = $props();
 </script>
 
-<div class="top-bar">
-	<Logo />
-	<nav>
-		<b>
-			<a href={resolve('/templates')}>Templates</a>
-			|
-			<a href={resolve('/contacts')}>Contacts</a>
-		</b>
-	</nav>
-	<form method="POST" action="/?/logout">
-		<button class="icon">
-			<Logout />Log out
-		</button>
-	</form>
+<div class="whole-bg" style:background-color="var(--hard-light-background)">
+	<div class="top-bar">
+		<Logo />
+		<nav>
+			<b>
+				<a href={resolve('/templates')}>Templates</a>
+				|
+				<a href={resolve('/contacts')}>Contacts</a>
+			</b>
+		</nav>
+		<form method="POST" action="/?/logout">
+			<button class="icon">
+				<Logout />Log out
+			</button>
+		</form>
+	</div>
+
+	<div class="center">{@render children()}</div>
 </div>
-<div class="center">{@render children()}</div>
 
 <style>
 	.top-bar {
@@ -30,6 +33,7 @@
 		display: flex;
 		align-items: center;
 		margin: 0;
+		height: fit-content;
 		background-color: var(--dark-background);
 	}
 	button {
@@ -43,9 +47,5 @@
 	a {
 		text-decoration: none;
 		color: inherit;
-	}
-
-	:global(body) {
-		background-color: var(--hard-light-background);
 	}
 </style>

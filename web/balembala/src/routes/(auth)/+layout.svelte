@@ -3,10 +3,12 @@
 	let { children } = $props();
 </script>
 
-<div class="vstack">
-	<Logo />
-	<div class="card">
-		{@render children()}
+<div class="whole-bg" style:background-color="var(--dark-background)">
+	<div class="vstack">
+		<Logo />
+		<div class="card">
+			{@render children()}
+		</div>
 	</div>
 </div>
 
@@ -18,8 +20,5 @@
 		justify-content: center;
 		margin-top: 5em;
 		row-gap: 5pt;
-	}
-	:global(body) {
-		background-color: var(--dark-background);
 	}
 </style>

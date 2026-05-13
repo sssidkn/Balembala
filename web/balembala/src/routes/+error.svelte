@@ -4,11 +4,13 @@
 	import { resolve } from '$app/paths';
 </script>
 
-<div class="vstack">
-	<Logo />
-	<div class="error-code"><b>{page.status}</b></div>
-	<div class="description"><b>Something went wrong</b></div>
-	<a href={resolve('/')}>Return to home page</a>
+<div class="whole-bg" style:background-color="var(--dark-background)">
+	<div class="vstack">
+		<Logo />
+		<div class="error-code"><b>{page.status}</b></div>
+		<div class="description"><b>Something went wrong</b></div>
+		<a href={resolve('/')}>Return to home page</a>
+	</div>
 </div>
 
 <style>
@@ -25,8 +27,5 @@
 	}
 	.description {
 		font-size: xx-large;
-	}
-	:global(body) {
-		background-color: var(--dark-background);
 	}
 </style>
