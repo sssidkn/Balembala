@@ -1,0 +1,89 @@
+:root {
+	--light-text: #f9fafb;
+	--gray-text: #667085;
+	--dark-text: #344054;
+	--border: #667085;
+	--dark-background: #101828;
+	--soft-light-background: #f2f4f7;
+	--hard-light-background: #ffffff;
+	--button: #2563eb;
+	--error: #ef4444;
+	--success: #10B981;
+}
+
+html {
+	height: 100%;
+}
+
+body {
+	color: var(--dark-text);
+	font-family: Arial;
+	height: 100%;
+	margin: 0;
+}
+
+.whole-bg {
+	display: flow-root;
+	margin: 0;
+	padding: 0;
+	min-height: 100%;
+	width: 100%;
+}
+
+button,.btn {
+	border: none;
+	border-radius: 5pt;
+	padding: 5pt;
+	cursor: pointer;
+	background-color: var(--button);
+	color: var(--light-text);
+}
+button:hover,.btn:hover {
+	filter: brightness(1.5);
+}
+button.icon,.btn.icon {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	column-gap: 5pt;
+}
+button:hover.round,.btn:hover.round {
+	filter: brightness(0.9);
+}
+button.round,.btn.round {
+	background-color: inherit;
+	color: var(--dark-text);
+	border: solid 1pt var(--border);
+	border-radius: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+svg {
+	width: var(--size, 20pt);
+	height: var(--size, 20pt);
+}
+.card {
+	border-radius: 10pt;
+	background: var(--soft-light-background);
+	padding: var(--pad, 16pt);
+}
+.error {
+	color: var(--error);
+	min-height: 1.2em;
+}
+label.text-form {
+	font-size: 0.8em;
+	display: block;
+	color: var(--gray-text);
+	margin-left: 3pt;
+}
+textarea.text-form, input.text-form {
+	font-family: Arial;
+	display: block;
+	border-radius: 5pt;
+	border-width: 1pt;
+	border-color: var(--border);
+	padding: 3pt;
+}
