@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Refresh from '$lib/assets/icons/Refresh.svg?component';
-	import Link from '$lib/assets/icons/Link.svg?component';
+	import Plus from '$lib/assets/icons/Plus.svg?component';
 	import { invalidateAll } from '$app/navigation';
 	import EditTemplate from '$lib/components/EditTemplate.svelte';
 	import FilteredList from '$lib/components/FilteredList.svelte';
@@ -23,7 +23,7 @@
 				<div style:flex-grow="1"><b>Bound Contacts</b></div>
 				{@render searchBar('Search name or email...')}
 				<button class="round" onclick={invalidateAll}><Refresh /></button>
-				<a class="btn round" href={resolve(`/templates/${page.params.id}/bind`)}><Link /></a>
+				<a class="btn round" href={resolve(`/templates/${page.params.id}/bind`)}><Plus /></a>
 			</div>
 		{/snippet}
 

@@ -1,6 +1,7 @@
-import { redirect } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { resolve } from '$app/paths';
+import { API_URL } from '$env/static/private';
 
 export const load = async () => {
 	return {
@@ -11,15 +12,19 @@ export const load = async () => {
 };
 
 export const actions = {
-	default: async ({ request }) => {
+	default: async ({ request, fetch }) => {
 		const data = await request.formData();
-		console.log('creating new contact');
 		const contact = {
 			name: data.get('name'),
 			email: data.get('email')
 		};
-		// TODO: Подрубить бэк
-		console.log(contact);
+		const response = await fetch(API_URL + '/contacts', {
+			method: 'POST',
+			body: JSON.stringify(contact)
+		});
+		if (!response.ok) {
+			error(response.status, response.statusText);
+		}
 		redirect(303, resolve('/contacts'));
 	}
 } satisfies Actions;

@@ -1,4 +1,4 @@
-<script lang="ts" generics="Data extends { id: string }">
+<script lang="ts" generics="Data extends { id: number }">
 	import type { Snippet } from 'svelte';
 	import Search from '$lib/assets/icons/Search.svg?component';
 	import { page } from '$app/state';
@@ -34,14 +34,14 @@
 		const newParams = new SvelteURLSearchParams(filters);
 		newParams.set('page', nextPage.toString());
 		// eslint-disable-next-line svelte/no-navigation-without-resolve
-		goto('?' + newParams.toString());
+		goto('?' + newParams.toString(), { replaceState: true });
 	}
 
 	function updateFilter(newFilter: string) {
 		const newParams = new SvelteURLSearchParams(filters);
 		newParams.set('search', newFilter);
 		// eslint-disable-next-line svelte/no-navigation-without-resolve
-		goto('?' + newParams.toString());
+		goto('?' + newParams.toString(), { replaceState: true });
 	}
 </script>
 

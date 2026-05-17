@@ -1,18 +1,23 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
-import { ACCESS_TOKEN } from '$lib/constants.server';
+import { API_URL } from '$env/static/private';
+import { setAuth } from '$lib/auth';
 export const actions = {
-	default: async ({ request, cookies }) => {
+	default: async ({ request, cookies, fetch }) => {
 		const data = await request.formData();
 		const username = data.get('username');
 		const email = data.get('email');
 		const password = data.get('password');
-		if (username === 'error') {
-			return fail(400, { username, email, error: 'Generic error' });
+
+		const response = await fetch(API_URL + '/register', {
+			method: 'POST',
+			body: JSON.stringify({ username, email, password })
+		});
+		if (!response.ok) {
+			return fail(response.status, { email, error: response.statusText });
 		}
-		console.log({ username, email, password });
-		// TODO: Подрубить бэк
-		cookies.set(ACCESS_TOKEN, 'jwt goes here', { path: '/' });
+		const body = await response.json();
+		setAuth(cookies, body.token);
 		redirect(303, '/');
 	}
 } satisfies Actions;

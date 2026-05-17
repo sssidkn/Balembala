@@ -10,7 +10,7 @@
 	import { SvelteSet } from 'svelte/reactivity';
 	import { enhance } from '$app/forms';
 	const { data }: PageProps = $props();
-	const checked: SvelteSet<string> = $state(new SvelteSet());
+	const checked: SvelteSet<number> = $state(new SvelteSet());
 	function isMatches(query: string, data: Contact): boolean {
 		return data.email.toLowerCase().includes(query) || data.name.toLowerCase().includes(query);
 	}
@@ -26,7 +26,7 @@
 				<form
 					method="POST"
 					use:enhance={({ formData }) => {
-						formData.append('contacts', JSON.stringify(Array.from(checked)));
+						formData.append('contacts_id', JSON.stringify({ contacts_id: Array.from(checked) }));
 					}}
 				>
 					<button class="round"><Check /></button>

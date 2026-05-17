@@ -87,3 +87,38 @@ textarea.text-form, input.text-form {
 	border-color: var(--border);
 	padding: 3pt;
 }
+.center {
+    margin-top: 20pt;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    column-gap: 30pt;
+}
+.vstack {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10pt;
+}
+.entry {
+    display: flex;
+    width: 100%;
+    column-gap: 10pt;
+    align-items: center;
+    border: solid 1.5pt var(--border);
+    --pad: 8pt;
+}
+button.secret {
+    display: none;
+}
+.control-buttons {
+    display: flex;
+    justify-content: space-between;
+    button {
+        border-radius: 100%;
+        color: var(--light-text);
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}

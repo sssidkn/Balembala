@@ -4,4 +4,4 @@
 	const { data } = $props();
 </script>
 
-<EditContact {data}></EditContact>
+<EditContact data={data.data}></EditContact>
