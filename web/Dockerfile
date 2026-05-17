@@ -4,6 +4,7 @@ WORKDIR /app
 COPY ./balembala/package*.json ./
 RUN npm ci
 COPY ./balembala/ .
+RUN mv .docker.env .env
 RUN npm run build
 RUN npm prune --production
 
