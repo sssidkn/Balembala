@@ -32,7 +32,7 @@
 				method="POST"
 				action="?/delete"
 				use:enhance={({ formData }) => {
-					data = data.filter((d) => d.id != formData.get('id')?.toString());
+					data = data.filter((d) => d.id != Number(formData.get('id')));
 					return ({ update }) => {
 						update({ invalidateAll: false });
 					};

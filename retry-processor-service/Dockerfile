@@ -1,5 +1,7 @@
 FROM golang:1.23.3-bullseye AS builder
 
+RUN sed -i 's|http://deb.debian.org|http://mirror.docker.ru|g' /etc/apt/sources.list \
+    && sed -i 's|http://security.debian.org|http://mirror.docker.ru/debian-security|g' /etc/apt/sources.list
 RUN apt-get update && \
     apt-get install -y \
     gcc \
@@ -13,6 +15,8 @@ COPY . .
 RUN CGO_ENABLED=1 GOOS=linux go build -o /retry-processor-service ./cmd/main.go
 
 FROM debian:bullseye-slim
+RUN sed -i 's|http://deb.debian.org|http://mirror.docker.ru|g' /etc/apt/sources.list \
+    && sed -i 's|http://security.debian.org|http://mirror.docker.ru/debian-security|g' /etc/apt/sources.list
 RUN apt-get update && \
     apt-get install -y \
     librdkafka1 \

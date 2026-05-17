@@ -58,12 +58,12 @@
 			oninput={setChanged}
 		></textarea>
 	</div>
-	{#if changed}
-		<div class="control-buttons">
-			<button type="submit" style:background-color="var(--success)"><Check /></button>
-			<button style:background-color="var(--error)" onclick={reset}><X /></button>
-		</div>
-	{/if}
+	<!-- {#if changed} -->
+	<div class="control-buttons">
+		<button type="submit" style:background-color="var(--success)"><Check /></button>
+		<button style:background-color="var(--error)" onclick={reset}><X /></button>
+	</div>
+	<!-- {/if} -->
 </form>
 
 <style>

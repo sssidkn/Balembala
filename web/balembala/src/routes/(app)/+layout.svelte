@@ -1,5 +1,4 @@
 <script lang="ts">
-	import './common.css';
 	import { resolve } from '$app/paths';
 	import Logout from '$lib/assets/icons/Logout.svg?component';
 	import Logo from '$lib/components/Logo.svelte';

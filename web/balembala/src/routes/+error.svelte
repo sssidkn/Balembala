@@ -4,23 +4,23 @@
 	import { resolve } from '$app/paths';
 </script>
 
-<div class="whole-bg" style:background-color="var(--dark-background)">
+<div class="whole-bg error-page">
 	<div class="vstack">
 		<Logo />
 		<div class="error-code"><b>{page.status}</b></div>
-		<div class="description"><b>Something went wrong</b></div>
+		<div class="description"><b>Something went wrong: {page.error?.message}</b></div>
 		<a href={resolve('/')}>Return to home page</a>
 	</div>
 </div>
 
 <style>
-	.vstack {
-		margin: 15pt;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		row-gap: 10pt;
+	.error-page {
 		color: var(--light-text);
+		background-color: var(--dark-background);
+		.vstack {
+			margin: 0;
+			align-items: center;
+		}
 	}
 	.error-code {
 		font-size: 300pt;

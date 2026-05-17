@@ -33,7 +33,7 @@
 				method="POST"
 				use:enhance={({ formData, action }) => {
 					if (action.search === '?/delete') {
-						data = data.filter((d) => d.id != formData.get('id')?.toString());
+						data = data.filter((d) => d.id != Number(formData.get('id')));
 					}
 					return async ({ update }) => {
 						await update({ invalidateAll: false });

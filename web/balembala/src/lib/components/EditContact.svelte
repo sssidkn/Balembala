@@ -57,18 +57,20 @@
 			oninput={setChanged}
 		/>
 	</div>
-	{#if changed}
-		<div class="control-buttons">
-			<button type="submit" style:background-color="var(--success)"><Check /></button>
-			<button style:background-color="var(--error)" onclick={reset}><X /></button>
-		</div>
-	{/if}
+	<!-- {#if changed} -->
+	<div class="control-buttons">
+		<button type="submit" style:background-color="var(--success)"><Check /></button>
+		<button style:background-color="var(--error)" onclick={reset}><X /></button>
+	</div>
+	<!-- {/if} -->
 </form>
 
 <style>
 	.name-input {
 		max-width: 100%;
-		font-size: x-large;
+		color: var(--dark-text);
+		font-size: xx-large;
+		font-weight: bold;
 		background: inherit;
 		border: none;
 	}

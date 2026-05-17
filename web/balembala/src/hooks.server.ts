@@ -1,13 +1,10 @@
-import { ACCESS_TOKEN } from '$lib/constants.server';
-import type { Handle } from '@sveltejs/kit';
+import { getAuth } from '$lib/auth';
+import type { HandleFetch } from '@sveltejs/kit';
 
-export const handle: Handle = async ({ event, resolve }) => {
-	const token = event.cookies.get(ACCESS_TOKEN);
-
-	if (token) {
-		event.locals.logged_in = true;
-	} else {
-		event.locals.logged_in = false;
+export const handleFetch: HandleFetch = async ({ request, event, fetch }) => {
+	const auth = getAuth(event.cookies);
+	if (auth) {
+		request.headers.set('Authorization', 'Bearer ' + auth);
 	}
-	return resolve(event);
+	return fetch(request);
 };
