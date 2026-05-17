@@ -305,6 +305,16 @@ services:
       sender-service:
         condition: service_started
 
+  web:
+    build:
+      context: web
+      dockerfile: Dockerfile
+    container_name: web
+    expose:
+      - "3000"
+    ports:
+      - "3000:3000"
+
 volumes:
   kafka-data1:
   kafka-data2:
