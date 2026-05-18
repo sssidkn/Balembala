@@ -1,0 +1,4 @@
+POST http://localhost:80/api/send/1
+Authorization: Bearer REPLACE_WITH_TOKEN
+Content-Type: application/json
+

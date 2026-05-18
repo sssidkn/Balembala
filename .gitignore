@@ -28,6 +28,12 @@ go.work.sum
 # env file
 .env
 
+# Vegeta generated files
+normal.bin
+normal.html
+targets.txt
+vegeta/state.json
+
 # Editor/IDE
 # .idea/
 # .vscode/

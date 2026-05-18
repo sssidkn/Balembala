@@ -7,6 +7,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type Config struct {
@@ -15,6 +16,8 @@ type Config struct {
 	Username string `yaml:"POSTGRES_USER" env:"POSTGRES_USER" env-default:"root"`
 	Password string `yaml:"POSTGRES_PASS" env:"POSTGRES_PASS" env-default:"1234"`
 	Database string `yaml:"POSTGRES_DB" env:"POSTGRES_DB" env-default:"authDb"`
+	MaxConns int32  `yaml:"POSTGRES_MAX_CONNS" env:"POSTGRES_MAX_CONNS" env-default:"10"`
+	MinConns int32  `yaml:"POSTGRES_MIN_CONNS" env:"POSTGRES_MIN_CONNS" env-default:"2"`
 }
 
 type DBInterface interface {
@@ -29,13 +32,37 @@ type DB struct {
 }
 
 func New(config Config) (*DB, error) {
-	dsn := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable host=%s port=%s", config.Username, config.Password, config.Database, config.Host, config.Port)
-	db, err := pgx.Connect(context.Background(), dsn)
+	dsn := fmt.Sprintf(
+		"user=%s password=%s dbname=%s sslmode=disable host=%s port=%s",
+		config.Username, config.Password, config.Database, config.Host, config.Port,
+	)
+
+	poolCfg, err := pgxpool.ParseConfig(dsn)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse pool config: %w", err)
+	}
+
+	if config.MaxConns > 0 {
+		poolCfg.MaxConns = config.MaxConns
+	}
+	if config.MinConns > 0 {
+		poolCfg.MinConns = config.MinConns
+	}
+
+	pool, err := pgxpool.NewWithConfig(context.Background(), poolCfg)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	if err = db.Ping(context.Background()); err != nil {
+
+	if err = pool.Ping(context.Background()); err != nil {
 		return nil, fmt.Errorf("failed to connect to database: %w", err)
 	}
-	return &DB{Db: db}, nil
+
+	return &DB{Db: pool}, nil
+}
+
+func (d *DB) Close() {
+	if pool, ok := d.Db.(*pgxpool.Pool); ok {
+		pool.Close()
+	}
 }
